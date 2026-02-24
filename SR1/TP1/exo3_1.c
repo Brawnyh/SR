@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
             wait(NULL);
         }
     }
+    
     printf("[%d] J'ai fini\n", getpid());
     return 0;
 }

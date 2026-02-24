@@ -24,11 +24,12 @@ int main(void) {
         printf("Le fils se termine\n");
         exit(0);
     }
+
     else {
         printf("\n--- PERE ---\n");
         afficher_infos();
 
-        wait(NULL);   //espera al hijo
+        wait(NULL); 
 
         printf("Le père se termine\n");
     }
