@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     }
     if (redir) {
         int fd = open(dest, O_WRONLY | O_CREAT | O_TRUNC,S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-        dup2(fd, 1); //red stdout
+        dup2(fd, 1); //redi stdout
         close(fd);
     }
 

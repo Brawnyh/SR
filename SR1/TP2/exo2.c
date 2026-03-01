@@ -14,7 +14,7 @@ void lire_nieme(char *nom, int n) {
     }
 
     if (n <= 0) {
-        perror("n positif")
+        perror("n positif");
         fclose(f);
         exit(1);
     }
@@ -53,7 +53,7 @@ void ecrire_nieme(char *nom, int n, int valeur) {
     }
 
     fseek(f, 0, SEEK_END);
-    long taille = ftell(f);
+    long taille = ftell(f); //pos actuelle
     int nb_entiers = taille / sizeof(int);
 
     if (n > nb_entiers) {
