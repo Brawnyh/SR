@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
         dup2(fd, 1); //redi stdout
         close(fd);
     }
-
+// test 2
 //test de los commits(no cuenta los forks)
     for (i = 1; i < argc; i++) {
         if (strcmp(argv[i], ">") == 0)
