@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
         close(fd);
     }
 
-
+//test de los commits(no cuenta los forks)
     for (i = 1; i < argc; i++) {
         if (strcmp(argv[i], ">") == 0)
             break;
