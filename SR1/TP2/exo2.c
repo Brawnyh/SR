@@ -72,7 +72,7 @@ void ecrire_nieme(char *nom, int n, int valeur) {
 }
 
 int main(int argc, char *argv[]) {
-
+    printf("test");
     if (argc != 3 && argc != 4) {
         perror("arguments");
         return 1;
