@@ -8,7 +8,7 @@
 int main(int argc, char *argv[])
 {
     for (int i = 1; i < argc; i++){
-        pid_t pid = fork();
+        pid_t pid = fork(); //creer un processus fils qui est une copie du pere qui s'execute en parallele
         if (pid < 0){
             perror("fork");
             exit(1);
