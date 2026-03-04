@@ -18,7 +18,6 @@ void lire_nieme(char *nom, int n) {
         fclose(f);
         exit(1);
     }
-
     fseek(f, 0, SEEK_END);
     long taille = ftell(f);
     int nb_entiers = taille / sizeof(int);
@@ -30,11 +29,9 @@ void lire_nieme(char *nom, int n) {
     }
 
     fseek(f, (n-1) * sizeof(int), SEEK_SET);
-
     int valeur;
     fread(&valeur, sizeof(int), 1, f);
-
-    printf("Valeur lue: %d\n", valeur);
+    printf("Valeur lue:%d\n", valeur);
 
     fclose(f);
 }
@@ -63,11 +60,8 @@ void ecrire_nieme(char *nom, int n, int valeur) {
     }
 
     fseek(f, (n-1) * sizeof(int), SEEK_SET);
-
     fwrite(&valeur, sizeof(int), 1, f);
-
     printf("Valeur ecrite: %d\n", valeur);
-
     fclose(f);
 }
 
