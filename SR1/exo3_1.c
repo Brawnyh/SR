@@ -9,7 +9,7 @@
 
 
 int main(int argc,char *argv[]){
-    //int f=open("/mnt/c/Users/Mamadou/workspace/SR1/fichier.txt",O_WRONLY|O_APPEND|O_EXCL);
+    
     int f=open(argv[1],O_WRONLY|O_CREAT|O_TRUNC,S_IREAD|S_IEXEC|S_IWRITE);//habria que ver como va esto
     if (f==-1){
         perror("Erreur de ouverture");
@@ -20,16 +20,17 @@ int main(int argc,char *argv[]){
     }
     //habia que usar read en este contexto
 
-
-    for (uint8_t i=0;i<3;i++){
-        if(write(fd;&i,1)!=1){
+    
+    for (int i=0;i<3;i++){
+        if(write(f,&i,1)!=1){
             perror("Write");
             exit(1);
         }
     }
     if (close(f)!=0){
         perror("close");
-        exit(1)
+        exit(1);
     }
     return 0;
 }
+//hacer los ejercicios 3.2/3.3/3.4 y 3.5 para asegurarme de haber entendido E/S(diapositiva)

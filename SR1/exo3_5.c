@@ -10,11 +10,11 @@ int main(int argc,char *argv[]){
     if (f==-1){
         perror("Erreur de ouverture fichier");
     }
-    if (argc<=2){
+    if (argc<1){
         perror("manque de arguments");
     }else{
         dup2(f,1);
-        printf("hola\n")
+        printf("hola\n");
     }
     return 0;
 }
