@@ -28,7 +28,7 @@ int main(int argc,char *argv[]){
         
 
         struct dirent *element;
-        while((element=readdir(rep))!=NULL){
+        while((element=readdir(rep))!=NULL){ //deberia usar otra cosa en vezz de readdir
             lstat(element->d_name,&Infos);
             
             if (Infos.st_size==0){
