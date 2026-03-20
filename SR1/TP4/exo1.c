@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#define _POSIX_C_SOURCE 200809L
 
 int main(void){
     int tube[2];

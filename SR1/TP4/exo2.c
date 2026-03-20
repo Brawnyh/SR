@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#define _POSIX_C_SOURCE 200809L
+
 #define MAX_BASSIN 5 
 
 int main(void){

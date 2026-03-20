@@ -9,6 +9,7 @@ void Afficheinode (struct stat * Infos){
     printf(" %10ld octets",Infos->st_size);
     printf(" %s",ctime(&Infos->st_mtime));
     
+    
 }
 
 
