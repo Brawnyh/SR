@@ -32,7 +32,7 @@ int main(int argc,char *argv[]){
             lstat(element->d_name,&Infos);
             printf("%-20s",element->d_name);
             lstat(element->d_name,&Infos);
-
+            
         
 
             if(S_ISREG(Infos.st_mode)){

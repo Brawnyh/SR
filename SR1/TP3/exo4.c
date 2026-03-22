@@ -29,14 +29,19 @@ int main(int argc,char *argv[]){
 
         struct dirent *element;
         while((element=readdir(rep))!=NULL){ //deberia usar otra cosa en vezz de readdir
-            lstat(element->d_name,&Infos);
+            if (strcmp(element->d_name==".") || strcmp(element->d_name=="..")){ continue;}
+
+            char chemin[1024];
+            snprintf(chemin,sizeof(chemin),"%s/%s",argv[1],element->d_name);
+
+            lstat(chemin,&Infos);
             
             if (Infos.st_size==0){
                 nbFich++;
             
             printf("%-20s",element->d_name);
             lstat(element->d_name,&Infos);
-
+            
         
 
             if(S_ISREG(Infos.st_mode)){
