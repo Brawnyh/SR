@@ -30,7 +30,7 @@ int main(void){
         
         close(tube[1]);
         wait(NULL);
-        printf("[Pere]: Mon fils %d est terminé avec le code 1.",getppid());
+        printf("[Pere]: Mon fils %d est terminé avec le code 1.",getpid());
     }
 
 
