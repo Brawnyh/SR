@@ -1,53 +1,119 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
-#include <dirent.h>
-#include <sys/stat.h>
+#include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
 #include <fcntl.h>
 #include <sys/wait.h>
-#include <string.h>
 
+#define CHEMIN_MAX 1024
+#define N 3
 
-#define _POSIX_C_SOURCE 200809L
-#define N 4
-#define CheminMax 1024
+int main(int argc, char *argv[]) {
+    if (argc != 3) {
+        printf("Usage: %s <magic> <dir>\n", argv[0]);
+        return 1;
+    }
 
-int pipe_pf[2];
-int pipe_fr[2];
+    char *magic = argv[1];
+    char *start_dir = argv[2];
 
-void parcourir(char *dirpath){
-    DIR *dir=opendir(dirpath);
-    if(dir==NULL){perror("Ouverture reperotire");exit(1);}
+    int tube1[2];
+    int tube2[2];
 
-    struct dirent *rep;
-    char cheminEnt[cheminMax];
+    pipe(tube1);
+    pipe (tube2);
 
-    struct stat Infos;
+    //traiterFichier
+    for (int i = 0; i < N; i++) {
+        if (fork() == 0) {
+            close(tube1[1]);
+            close(tube2[0]);
 
-    while((rep=readdir(dir))!=NULL){
-        if (strcmp(rep->d_name,".") && strcmp(rep->d_name,"..")){
-            continue;
+            char chemin[CHEMIN_MAX];
+            while (read(tube1[0], chemin, CHEMIN_MAX) > 0) {
+                int fd = open(chemin, O_RDONLY);
+                if (fd < 0) continue;
+
+                int len = strlen(magic);
+                char buf[16];
+                if (read(fd, buf, len) == len) {
+                    if (strncmp(buf, magic, len) == 0) {
+                        struct stat st;
+                        if (stat(chemin, &st) == 0) {
+                            write (tube2[1], chemin, CHEMIN_MAX);
+                            write (tube2[1], &st.st_ino, sizeof(ino_t));
+                            write (tube2[1], &st.st_size, sizeof(off_t));
+                        }
+                    }
+                }
+                close(fd);
+            }
+            close(tube1[0]);
+            close(tube2[1]);
+            exit(0);
         }
-        snprintf(cheminEnt,cheminMax,"%s,%s",dirpath,rep->d_name)
-        lstat(cheminEnt,&Infos);
+    }
 
-        if (S_ISREG(Infos.st_mode)){
-            write(pipe_pf[1],cheminEnt,cheminMax);
+    // 🔹 hijo "traiterRéponse"
+    if (fork() == 0) {
+        close(tube1[0]);
+        close(tube1[1]);
+        close(tube2[1]); // no escribir
+
+        char chemin[CHEMIN_MAX];
+        ino_t inode;
+        off_t size;
+
+        while (1) {
+            if (read(tube2[0], chemin, CHEMIN_MAX) <= 0) break;
+            if (read(tube2[0], &inode, sizeof(ino_t)) <= 0) break;
+            if (read(tube2[0], &size, sizeof(off_t)) <= 0) break;
+
+            printf("Fichier: %s | inode: %ld | taille: %ld\n",
+                   chemin, inode, size);
         }
-        if (S_ISDIR(Infos.st_mode)){
-            parcourir(cheminEnt);
+
+        close(tube2[0]);
+        exit(0);
+    }
+
+    //pere direc
+    close(tube1[0]);
+    close(tube2[0]);
+    close(tube2[1]);
+
+    char stack[100][CHEMIN_MAX];
+    int top = 0;
+    strncpy(stack[top++], start_dir, CHEMIN_MAX);
+
+    while (top > 0) {
+        char current[CHEMIN_MAX];
+        strncpy(current, stack[--top], CHEMIN_MAX);
+
+        DIR *dir = opendir(current);
+        if (!dir) continue;
+
+        struct dirent *entry;
+        while ((entry = readdir(dir)) != NULL) {
+            if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, ".."))
+                continue;
+
+            char fullchemin[CHEMIN_MAX];
+            snprintf(fullchemin, CHEMIN_MAX, "%s/%s", current, entry->d_name);
+
+            if (entry->d_type == DT_DIR) {
+                strncpy(stack[top++], fullchemin, CHEMIN_MAX);
+            } else if (entry->d_type == DT_REG) {
+                write(tube1[1], fullchemin, CHEMIN_MAX);
+            }
         }
         closedir(dir);
     }
-
-
-
-}
-
-
-
-int main(int argc,char * argv[]){
+    close(tube1[1]);
+    for (int i=0; i<N+1; i++) wait(NULL);
 
     return 0;
 }
