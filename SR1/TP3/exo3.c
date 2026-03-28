@@ -33,8 +33,7 @@ int main(int argc,char *argv[]){
             printf("%-20s",element->d_name);
             lstat(element->d_name,&Infos);
             
-        
-
+    
             if(S_ISREG(Infos.st_mode)){
                     printf("fichier ordinaire");
             }
