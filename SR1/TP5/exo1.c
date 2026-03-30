@@ -57,11 +57,11 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // 🔹 hijo "traiterRéponse"
+    // "traiterRéponse"
     if (fork() == 0) {
         close(tube1[0]);
         close(tube1[1]);
-        close(tube2[1]); // no escribir
+        close(tube2[1]);
 
         char chemin[CHEMIN_MAX];
         ino_t inode;
