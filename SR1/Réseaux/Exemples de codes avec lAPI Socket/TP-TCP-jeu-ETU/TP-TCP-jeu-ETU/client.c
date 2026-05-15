@@ -91,8 +91,10 @@ int main(int argc, char **argv) {
 
     /* Init caracteristiques serveur distant (struct sockaddr_in) */
     // TODO
-    memset(&server_adr, 0, sizeof(server_adr))
-    server_adr.bind
+    memset(&server_adr, 0, sizeof(server_adr));
+    server_adr.sin_family= AF_INET;
+    server_adr.sin_port=htons(numPort);
+    server_adr.sin_addr.s_addr = inet_addr(server_ip);
 
 
     /* Etablissement connexion TCP avec process serveur distant */
