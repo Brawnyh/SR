@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     // TODO. @IP et numéro de port en paramètres du programme
     char server_ip[16];
     int numPort,sock_id;
-    struct sockaddr_in server_adr;
+    
      
     strcpy(server_ip,argv[1]);
     numPort=atoi(argv[2]);
@@ -91,14 +91,19 @@ int main(int argc, char **argv) {
 
     /* Init caracteristiques serveur distant (struct sockaddr_in) */
     // TODO
-    memset(&server_adr, 0, sizeof(server_adr));
+    struct sockaddr_in server_adr;
     server_adr.sin_family= AF_INET;
-    server_adr.sin_port=htons(numPort);
+    server_adr.sin_port=htons(numPort); //htons converti le port en big-endian réseau
     server_adr.sin_addr.s_addr = inet_addr(server_ip);
+    //inet_ptons(AF_INET,server_ip,&server_adr.sin_addr); ->converti une ip en binaire
 
 
     /* Etablissement connexion TCP avec process serveur distant */
     // TODO
+    if (connect(sock_id,(struct sockaddr*)&server_adr,sizeof(server_adr))< 0){
+        perror("problème de demande de conexion");
+        exit(0);
+    }
 
     /* Tentatives du joueur : stoppe quand tresor trouvé */
     do {
@@ -110,16 +115,20 @@ int main(int argc, char **argv) {
 
         /* Construction requête (serialisation en chaines de caractères) */
         // TODO
-
+        char s_mess[16];
+        sprintf(s_mess,"%d %d",lig,col);
         /* Envoi de la requête au serveur (send) */
         // TODO
-
+        send(sock_id,s_mess,strlen(s_mess)+1,0);
+        
         /* Réception du resultat du coup (recv) */
         // TODO
+        recv(sock_id,s_mess,sizeof(s_mess),0);
 
         /* Deserialisation du résultat en un entier */
         // TODO
-        res = 0;
+        sscanf(s_mess, "%d", &res);
+        
 
         /* Mise à jour */
         if (lig>=1 && lig<=N && col>=1 && col<=N)
@@ -131,10 +140,13 @@ int main(int argc, char **argv) {
 
     /* Fermeture connexion TCP */
     // TODO
-
+    shutdown(sock_id,2);
+    close(sock_id);
     /* Terminaison du jeu : le joueur a trouvé le tresor */
     afficher_jeu(jeu, res, points, coups);
     printf("\nBRAVO : trésor trouvé en %d essai(s) avec %d point(s)"
             " au total !\n\n", coups, points);
     return 0;
 }
+
+
