@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
   adr_voisin.sin_port = htons(neighbor_port);
   inet_pton(AF_INET, LOCALHOST, &adr_voisin.sin_addr);
 
-  printf("EMETTEUR : envoi vers voisin R%d port %d\n", neighbor_num, neighbor_port);
+  printf("EMET:envoi vers voisin R%d port %d\n", neighbor_num, neighbor_port);
 
   char buff[BUF_SIZE_OUT];
 
@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
   sprintf(buff, "%d", myRoutingTable.nb_entry);
   sendto(sock_em, buff, strlen(buff)+1, 0,
          (struct sockaddr*)&adr_voisin, sizeof(adr_voisin));
-  printf("EMETTEUR : annonce du nb d'entrees -> %d\n", myRoutingTable.nb_entry);
+  printf("EMET:annonce du nb d'entrees -> %d\n", myRoutingTable.nb_entry);
 
   // maintenant on envoie chaque entree de la table un par un
   for (int i = 0; i < myRoutingTable.nb_entry; i++) {
@@ -93,10 +93,10 @@ int main(int argc, char **argv) {
       strcpy(buff, myRoutingTable.tab_entry[i]);
       sendto(sock_em, buff, strlen(buff)+1, 0,
              (struct sockaddr*)&adr_voisin, sizeof(adr_voisin));
-      printf("EMETTEUR : route envoyée -> %s\n", buff);
+      printf("EMET:route envoyée -> %s\n", buff);
   }
 
-  printf("EMETTEUR : toutes les routes ont été envoyées\n");
+  printf("EMET:toutes les routes ont été envoyées\n");
 
   // fermeture socket, plus besoin
   close(sock_em);

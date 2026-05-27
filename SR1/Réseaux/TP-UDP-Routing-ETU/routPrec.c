@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
   // calcul du port de reception a partir de notre numero
   // ex: si on est R2 -> port = 17900 + 2 = 17902
   int my_port = NO_BASE_PORT + atoi(argv[2]);
-  printf("RECEPTEUR : en ecoute sur port %d\n", my_port);
+  printf("RECEP:en ecoute sur port %d\n", my_port);
 
   // configuration de notre adresse locale
   struct sockaddr_in adr_local;
@@ -96,26 +96,26 @@ int main(int argc, char **argv) {
   recvfrom(sock_rec, buff, sizeof(buff), 0,
            (struct sockaddr*)&adr_voisin, &len_voisin);
   sscanf(buff, "%d", &nb_routes);
-  printf("RECEPTEUR : va recevoir %d routes\n", nb_routes);
+  printf("RECEP:va recevoir %d routes\n", nb_routes);
 
   // reception des routes une par une
   for (int i = 0; i < nb_routes; i++) {
       memset(buff, 0, sizeof(buff));
       recvfrom(sock_rec, buff, sizeof(buff), 0,
                (struct sockaddr*)&adr_voisin, &len_voisin);
-      printf("RECEPTEUR : route reçue -> %s\n", buff);
+      printf("RECEP:route reçue -> %s\n", buff);
 
       // on ajoute la route seulement si elle est pas deja dans notre table
       // evite les doublons si on recoit deux fois la meme route
       if (!is_present_entry_table(&myRoutingTable, buff)) {
           add_entry_routing_table(&myRoutingTable, buff);
-          printf("RECEPTEUR : route ajoutée a la table\n");
+          printf("RECEP:route ajoutée a la table\n");
       } else {
-          printf("RECEPTEUR : route deja presente, on skip\n");
+          printf("RECEP:route deja presente, on skip\n");
       }
   }
 
-  printf("RECEPTEUR : echange terminé\n");
+  printf("RECEP:echange terminé\n");
   close(sock_rec);
 
   // Display new content of my routing table
